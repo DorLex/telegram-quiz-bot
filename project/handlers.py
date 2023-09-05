@@ -7,7 +7,7 @@ from . import quiz
 
 async def send_welcome(message: types.Message):
     await message.answer('Привет! Готов проверить знания?', reply_markup=buttons.start_menu)
-    db.add_user(message.from_user.id, message.from_user.full_name)
+    db.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
 
 async def game(message: types.Message):
