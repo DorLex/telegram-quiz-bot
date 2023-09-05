@@ -1,12 +1,13 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-# ---------Main Menu--------------
-buttonStartQuiz = KeyboardButton('Начать викторину')
-mainMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(buttonStartQuiz)
+# ---------Start Menu--------------
+button_start_quiz = KeyboardButton('Начать викторину')
+start_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(button_start_quiz)
 
 # ---------End menu--------------
-buttonResult = KeyboardButton('Показать результат')
-buttonTableRecords = KeyboardButton('Показать таблицу рекордов')
-buttonResetScore = KeyboardButton('Сыграть заново')
-endMenu = ReplyKeyboardMarkup(resize_keyboard=True).add(buttonResult).add(
-    buttonTableRecords).add(buttonResetScore)
+button_result = KeyboardButton('Показать результат')
+button_table_records = KeyboardButton('Показать таблицу рекордов')
+button_reset_score = KeyboardButton('Сыграть заново')
+
+end_menu = (ReplyKeyboardMarkup(resize_keyboard=True).add(button_result)
+            .add(button_table_records).add(button_reset_score))
