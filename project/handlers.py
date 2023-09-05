@@ -1,8 +1,8 @@
 from aiogram import types, Dispatcher
 
-from database import db
-import buttons
-import quiz
+from .database import db
+from . import buttons
+from . import quiz
 
 
 async def send_welcome(message: types.Message):
