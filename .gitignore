@@ -1,4 +1,8 @@
-/venv/
 /.idea/
-config.py
-database.db
+/.vscode/
+/venv/
+__pycache__/
+
+.env
+*.db
+*.sqlite3
