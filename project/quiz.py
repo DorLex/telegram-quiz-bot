@@ -1,7 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-from database import db
-from questions import questions
+from .database import db
+from .questions import questions
 
 
 def get_text_question(user_id):

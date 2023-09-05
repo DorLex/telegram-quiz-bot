@@ -2,8 +2,8 @@ import logging
 
 from aiogram import executor
 
-from create_bot import dp
-import handlers
+from project.create_bot import dp
+from project import handlers
 
 logging.basicConfig(level=logging.INFO)
 
