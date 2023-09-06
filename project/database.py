@@ -37,6 +37,7 @@ class Database:
                 """,
                 (user_id,)
             )
+
             results = self.cursor.fetchone()[0]
             return results
 
@@ -45,10 +46,10 @@ class Database:
             self.cursor.execute(
                 """
                 UPDATE users 
-                SET index_question = (?) 
+                SET index_question = index_question + 1 
                 WHERE id == (?);
                 """,
-                (self.get_index_question(user_id) + 1, user_id,)
+                (user_id,)
             )
 
     def reset_index_question(self, user_id):
@@ -72,6 +73,7 @@ class Database:
                 """,
                 (user_id,)
             )
+
             results = self.cursor.fetchone()[0]
             return results
 
@@ -80,10 +82,10 @@ class Database:
             self.cursor.execute(
                 """
                 UPDATE users 
-                SET score = (?) 
+                SET score = score + 1 
                 WHERE id == (?);
                 """,
-                (self.get_score(user_id) + 1, user_id,)
+                (user_id,)
             )
 
     def reset_score(self, user_id):
@@ -106,12 +108,15 @@ class Database:
                 ORDER BY score DESC;
                 """
             )
-            results = self.cursor.fetchall()
+
+            results: list[tuple] = self.cursor.fetchall()
+
             table_records = ''
-            num_user = 1
-            for i in results:
-                table_records += f'{num_user}. {i[0]} : {i[1]}\n'
-                num_user += 1
+            num_place = 1
+            for user_name, score in results:
+                table_records += f'{num_place}. {user_name} : {score}\n'
+                num_place += 1
+
             return table_records
 
 
