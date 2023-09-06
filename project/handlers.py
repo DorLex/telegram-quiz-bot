@@ -1,53 +1,58 @@
 from aiogram import types, Dispatcher
+from aiogram.dispatcher.filters import Text
 
 from .database import db
 from . import buttons
-from . import quiz
+from .services import quiz_service
+from .services import handler_service
 
 
 async def send_welcome(message: types.Message):
-    await message.answer('Привет! Готов проверить знания?', reply_markup=buttons.start_menu)
     db.create_or_update_user(message.from_user.id, message.from_user.full_name)
+    await message.answer('Привет! Готов проверить знания?', reply_markup=buttons.start_menu)
 
 
 async def text_handler(message: types.Message):
     try:
-        if message.text == 'Показать результат':
-            answer_text = f'Правильно {db.get_score(message.from_user.id)} из 10'
-            await message.answer(answer_text, reply_markup=buttons.end_menu)
+        user_id = message.from_user.id
+        index_question = db.get_index_question(user_id)
+        message_text = message.text
 
-        elif message.text == 'Показать таблицу рекордов':
-            await message.answer(db.get_table_records(), reply_markup=buttons.end_menu)
+        if message_text == quiz_service.get_right_answer(index_question):
+            await handler_service.add_point(user_id, index_question, message)
 
-        elif message.text == 'Сыграть заново':
-            db.reset_score(message.from_user.id)
-            db.reset_index_question(message.from_user.id)
-            await message.answer('Счет обнулён. Желаете сыграть еще раз?', reply_markup=buttons.start_menu)
-
-        elif message.text == 'Начать викторину':
-            text_question, answer_options_keyboard = quiz.generate_question(message.from_user.id)
-            await message.answer(text_question, reply_markup=answer_options_keyboard)
-
-        elif message.text == quiz.get_right_answer(message.from_user.id):
-            db.update_score(message.from_user.id)
-            db.update_index_question(message.from_user.id)
-            text_question, answer_options_keyboard = quiz.generate_question(message.from_user.id)
-
-            await message.answer(text_question, reply_markup=answer_options_keyboard)
-
-        elif message.text in quiz.get_answer_options(db.get_index_question(message.from_user.id)):
-            db.update_index_question(message.from_user.id)
-            text_question, answer_options_keyboard = quiz.generate_question(message.from_user.id)
-
-            await message.answer(text_question, reply_markup=answer_options_keyboard)
+        elif message_text in quiz_service.get_answer_options(index_question):
+            await handler_service.next_question(user_id, index_question, message)
 
         else:
             await message.answer('Нет такого варианта')
 
     except TypeError:
-        await message.answer('Вы прошли викторину.', reply_markup=buttons.end_menu)
+        await handler_service.end_quiz(message)
+
+
+async def show_result(message: types.Message):
+    await handler_service.get_result(message.from_user.id, message)
+
+
+async def show_table_records(message: types.Message):
+    await handler_service.get_table_records(message)
+
+
+async def new_game(message: types.Message):
+    await handler_service.reset_result(message.from_user.id, message)
+
+
+async def start_quiz(message: types.Message):
+    await handler_service.get_question(message.from_user.id, message)
 
 
 def register_handlers(dispatcher: Dispatcher):
     dispatcher.register_message_handler(send_welcome, commands=['start'])
+
+    dispatcher.register_message_handler(start_quiz, Text(['Начать викторину', 'go']))
+    dispatcher.register_message_handler(show_result, Text('Показать результат'))
+    dispatcher.register_message_handler(show_table_records, Text('Показать таблицу рекордов'))
+    dispatcher.register_message_handler(new_game, Text('Сыграть заново'))
+
     dispatcher.register_message_handler(text_handler)
