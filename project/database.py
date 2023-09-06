@@ -88,7 +88,7 @@ class Database:
                 (user_id,)
             )
 
-    def reset_score(self, user_id):
+    def reset_user_score(self, user_id):
         with self.database:
             self.cursor.execute(
                 """
@@ -99,7 +99,7 @@ class Database:
                 (0, user_id,)
             )
 
-    def get_table_records(self):
+    def get_users_results(self):
         with self.database:
             self.cursor.execute(
                 """
@@ -110,14 +110,7 @@ class Database:
             )
 
             results: list[tuple] = self.cursor.fetchall()
-
-            table_records = ''
-            num_place = 1
-            for user_name, score in results:
-                table_records += f'{num_place}. {user_name} : {score}\n'
-                num_place += 1
-
-            return table_records
+            return results
 
 
 db = Database('database.db')

@@ -1,7 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-from .database import db
-from .questions import questions_and_answers
+from project.questions import questions_and_answers
 
 
 def get_text_question(index_question):
@@ -14,8 +13,7 @@ def get_answer_options(index_question):
     return answer_options
 
 
-def get_right_answer(user_id):
-    index_question = db.get_index_question(user_id)
+def get_right_answer(index_question):
     right_answer = questions_and_answers.get(index_question)['right_answer']
     return right_answer
 
@@ -28,9 +26,7 @@ def generate_options_keyboard(answer_options):
     return answer_options_keyboard
 
 
-def generate_question(user_id):
-    index_question = db.get_index_question(user_id)
-
+def generate_question(index_question):
     text_question = get_text_question(index_question)
     answer_options = get_answer_options(index_question)
 
