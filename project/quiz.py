@@ -1,30 +1,39 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 from .database import db
-from .questions import questions
+from .questions import questions_and_answers
 
 
-def get_text_question(user_id):
+def get_text_question(index_question):
+    text_question = questions_and_answers.get(index_question)['text']
+    return text_question
+
+
+def get_answer_options(index_question):
+    answer_options = questions_and_answers.get(index_question)['answer_options']
+    return answer_options
+
+
+def get_right_answer(user_id):
     index_question = db.get_index_question(user_id)
-    list_ques = list(questions)
-    text_ques = list_ques[index_question]
-
-    return text_ques
+    right_answer = questions_and_answers.get(index_question)['right_answer']
+    return right_answer
 
 
-def get_correct_answer(user_id):
-    correct_answer = questions[get_text_question(user_id)][0]
-    return correct_answer
+def generate_options_keyboard(answer_options):
+    answer_options_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    for option in answer_options:
+        answer_options_keyboard.add(KeyboardButton(option))
 
-
-def get_choices(user_id):
-    choices = questions[get_text_question(user_id)][1]
-    return choices
+    return answer_options_keyboard
 
 
 def generate_question(user_id):
-    keyboard = ReplyKeyboardMarkup()
-    for i in get_choices(user_id):
-        keyboard.row(KeyboardButton(i))
+    index_question = db.get_index_question(user_id)
 
-    return {'text': get_text_question(user_id), 'keyboard': keyboard}
+    text_question = get_text_question(index_question)
+    answer_options = get_answer_options(index_question)
+
+    answer_options_keyboard = generate_options_keyboard(answer_options)
+
+    return text_question, answer_options_keyboard
