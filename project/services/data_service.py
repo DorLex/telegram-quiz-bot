@@ -3,6 +3,11 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from project.questions import questions_and_answers
 
 
+def index_out_of_range(index_question):
+    if index_question >= len(questions_and_answers):
+        return True
+
+
 def get_text_question(index_question):
     text_question = questions_and_answers.get(index_question)['text']
     return text_question

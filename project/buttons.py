@@ -4,7 +4,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 button_start_quiz = KeyboardButton('Начать викторину')
 start_menu = ReplyKeyboardMarkup(resize_keyboard=True).add(button_start_quiz)
 
-# ---------End menu--------------
+# ---------End menu----------------
 button_result = KeyboardButton('Показать результат')
 button_table_records = KeyboardButton('Показать таблицу рекордов')
 button_reset_score = KeyboardButton('Сыграть заново')

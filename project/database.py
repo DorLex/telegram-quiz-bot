@@ -99,13 +99,14 @@ class Database:
                 (0, user_id,)
             )
 
-    def get_users_results(self):
+    def get_top_10_users_results(self) -> list[tuple]:
         with self.database:
             self.cursor.execute(
                 """
                 SELECT name, score 
                 FROM users 
-                ORDER BY score DESC;
+                ORDER BY score DESC
+                LIMIT 10;
                 """
             )
 
