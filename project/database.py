@@ -18,7 +18,7 @@ class Database:
 
     def create_or_update_user(self, user_id, user_name):
         with self.database:
-            return self.cursor.execute(
+            self.cursor.execute(
                 """
                 INSERT INTO users (id, name) VALUES (?, ?)
                 ON CONFLICT (id) DO
