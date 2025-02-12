@@ -27,7 +27,7 @@ class Database:
                 (user_id, user_name, user_name,)
             )
 
-    def get_index_question(self, user_id):
+    def get_index_question(self, user_id: int):
         with self.database:
             self.cursor.execute(
                 """
