@@ -3,8 +3,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from project.questions import questions_and_answers
 
 
-def index_out_of_range(index_question: int) -> bool:
-    if index_question >= len(questions_and_answers):
+def next_index_out_of_range(index_question: int) -> bool:
+    if index_question >= len(questions_and_answers) - 1:
         return True
     return False
 

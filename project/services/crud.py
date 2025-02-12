@@ -2,6 +2,7 @@ from aiogram.types import Message
 
 from project import buttons
 from project.database import db
+from project.questions import questions_and_answers
 from project.services import questions
 
 
@@ -18,7 +19,7 @@ async def get_question(user_id: int, message: Message) -> Message:
 
 
 async def get_result(user_id: int, message: Message) -> Message:
-    answer_text: str = f'Правильно {db.get_score(user_id)} из 10'
+    answer_text: str = f'Правильно {db.get_score(user_id)} из {len(questions_and_answers)}'
     return await message.answer(answer_text, reply_markup=buttons.end_menu)
 
 
@@ -42,7 +43,7 @@ async def reset_result(user_id: int, message: Message) -> Message:
 
 async def next_question(user_id: int, message: Message) -> Message:
     index_question: int = db.get_index_question(user_id)
-    if questions.index_out_of_range(index_question + 1):
+    if questions.next_index_out_of_range(index_question):
         return await end_quiz(message)
 
     db.update_index_question(user_id)

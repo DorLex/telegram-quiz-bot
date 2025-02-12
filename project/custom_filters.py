@@ -1,3 +1,4 @@
+from aiogram import Dispatcher
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram.types import Message
 
@@ -27,6 +28,6 @@ class InAnswerOptionsFilter(BoundFilter):
         return message.text in questions.get_answer_options(index_question)
 
 
-def register_filters(dispatcher) -> None:
+def register_filters(dispatcher: Dispatcher) -> None:
     dispatcher.filters_factory.bind(RightAnswerFilter)
     dispatcher.filters_factory.bind(InAnswerOptionsFilter)
