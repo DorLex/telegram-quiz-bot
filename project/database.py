@@ -1,10 +1,11 @@
 import sqlite3 as sql
+from sqlite3 import Cursor
 
 
 class Database:
-    def __init__(self, db_file):
+    def __init__(self, db_file: str) -> None:
         with sql.connect(db_file) as self.database:
-            self.cursor = self.database.cursor()
+            self.cursor: Cursor = self.database.cursor()
             self.cursor.execute(
                 """
                 CREATE TABLE IF NOT EXISTS users (
@@ -16,7 +17,7 @@ class Database:
                 """
             )
 
-    def create_or_update_user(self, user_id, user_name):
+    def create_or_update_user(self, user_id: int, user_name: str) -> None:
         with self.database:
             self.cursor.execute(
                 """
@@ -27,7 +28,7 @@ class Database:
                 (user_id, user_name, user_name,)
             )
 
-    def get_index_question(self, user_id: int):
+    def get_index_question(self, user_id: int) -> int:
         with self.database:
             self.cursor.execute(
                 """
@@ -38,10 +39,10 @@ class Database:
                 (user_id,)
             )
 
-            results = self.cursor.fetchone()[0]
-            return results
+            index_question: int = self.cursor.fetchone()[0]
+            return index_question
 
-    def update_index_question(self, user_id):
+    def update_index_question(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """
@@ -52,7 +53,7 @@ class Database:
                 (user_id,)
             )
 
-    def reset_index_question(self, user_id):
+    def reset_index_question(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """
@@ -63,7 +64,7 @@ class Database:
                 (0, user_id,)
             )
 
-    def get_score(self, user_id):
+    def get_score(self, user_id: int) -> int:
         with self.database:
             self.cursor.execute(
                 """
@@ -74,10 +75,10 @@ class Database:
                 (user_id,)
             )
 
-            results = self.cursor.fetchone()[0]
-            return results
+            score: int = self.cursor.fetchone()[0]
+            return score
 
-    def update_score(self, user_id):
+    def update_score(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """
@@ -88,7 +89,7 @@ class Database:
                 (user_id,)
             )
 
-    def reset_user_score(self, user_id):
+    def reset_user_score(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """
