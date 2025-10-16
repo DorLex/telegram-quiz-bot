@@ -14,7 +14,7 @@ class Database:
                 index_question INTEGER NOT NULL DEFAULT 0,
                 score INTEGER NOT NULL DEFAULT 0
                 );
-                """
+                """,
             )
 
     def create_or_update_user(self, user_id: int, user_name: str) -> None:
@@ -25,7 +25,7 @@ class Database:
                 ON CONFLICT (id) DO
                 UPDATE SET name = (?);
                 """,
-                (user_id, user_name, user_name,)
+                (user_id, user_name, user_name),
             )
 
     def get_index_question(self, user_id: int) -> int:
@@ -36,7 +36,7 @@ class Database:
                 FROM users 
                 WHERE id == (?);
                 """,
-                (user_id,)
+                (user_id,),
             )
 
             index_question: int = self.cursor.fetchone()[0]
@@ -50,7 +50,7 @@ class Database:
                 SET index_question = index_question + 1 
                 WHERE id == (?);
                 """,
-                (user_id,)
+                (user_id,),
             )
 
     def reset_index_question(self, user_id: int) -> None:
@@ -61,7 +61,7 @@ class Database:
                 SET index_question = (?) 
                 WHERE id == (?);
                 """,
-                (0, user_id,)
+                (0, user_id),
             )
 
     def get_score(self, user_id: int) -> int:
@@ -72,7 +72,7 @@ class Database:
                 FROM users 
                 WHERE id == (?);
                 """,
-                (user_id,)
+                (user_id,),
             )
 
             score: int = self.cursor.fetchone()[0]
@@ -86,7 +86,7 @@ class Database:
                 SET score = score + 1 
                 WHERE id == (?);
                 """,
-                (user_id,)
+                (user_id,),
             )
 
     def reset_user_score(self, user_id: int) -> None:
@@ -97,7 +97,7 @@ class Database:
                 SET score = (?) 
                 WHERE id == (?);
                 """,
-                (0, user_id,)
+                (0, user_id),
             )
 
     def get_top_10_users_results(self) -> list[tuple]:
@@ -108,7 +108,7 @@ class Database:
                 FROM users 
                 ORDER BY score DESC
                 LIMIT 10;
-                """
+                """,
             )
 
             results: list[tuple] = self.cursor.fetchall()

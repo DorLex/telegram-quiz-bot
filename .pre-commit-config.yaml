@@ -1,0 +1,14 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff_linter
+        entry: ruff check --fix --show-fixes
+        language: system # запускает ruff из активированного окружения
+        types: [ python ]
+
+      - id: ruff-format
+        name: ruff_formatter
+        entry: ruff format
+        language: system # запускает ruff из активированного окружения
+        types: [ python ]
