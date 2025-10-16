@@ -1,0 +1,53 @@
+[project]
+name = "telegram-quiz-bot"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "DorLex", email = "dorozhinskiysanya@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiogram (>=3.22.0,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.3.0"
+ruff = "^0.14.1"
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E501", # проверка длины строки
+    "I", # авто-сортировка импортов, isort
+    "UP", # проверка на устаревшие сущности из модулей, pyupgrade
+    "ANN001", # аннотации типов аргументов
+    # аннотации возвращаемых типов для методов:
+    "ANN201",
+    "ANN202",
+    "ANN204",
+    "ANN205",
+    "ANN206",
+    "A", # названия переменных, "затеняющие" встроенные функции и т.д. (A001, A002 ...)
+    "BLE", # слишком широкий отлов ошибки (except Exception:)
+    "COM", # завершающие запятые (COM812 ...)
+    "F", # неиспользуемые импорты и много чего еще (F401 ...)
+    "ISC", # многострочные str
+    "N", # pep8 naming (N801 ...)
+    "T20" # забытый print() в коде
+]
+ignore = [
+    "Q000", # установка двойных ковычек вместо одинарных
+]
+
+[tool.ruff.format]
+quote-style = "single" # какие ковычки будет устанавливать форматтер, если может
