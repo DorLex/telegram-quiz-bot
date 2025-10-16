@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram.dispatcher.filters import Text
 from aiogram.types import Message
 
-from project.services import crud
+from src.services import crud
 
 
 async def welcome(message: Message) -> None:

@@ -1,6 +1,6 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from project.questions import questions_and_answers
+from src.questions import questions_and_answers
 
 
 def next_index_out_of_range(index_question: int) -> bool:

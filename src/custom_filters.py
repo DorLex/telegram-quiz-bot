@@ -2,8 +2,8 @@ from aiogram import Dispatcher
 from aiogram.dispatcher.filters import BoundFilter
 from aiogram.types import Message
 
-from project.database import db
-from project.services import questions
+from src.database import db
+from src.services import questions
 
 
 class RightAnswerFilter(BoundFilter):

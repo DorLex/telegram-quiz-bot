@@ -3,7 +3,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from decouple import config
 
-from project import custom_filters, handlers
+from src import custom_filters, handlers
 
 API_TOKEN = config('API_TOKEN')
 

@@ -1,9 +1,9 @@
 from aiogram.types import Message
 
-from project import buttons
-from project.database import db
-from project.questions import questions_and_answers
-from project.services import questions
+from src import buttons
+from src.database import db
+from src.questions import questions_and_answers
+from src.services import questions
 
 
 async def add_gamer(message: Message) -> None:
