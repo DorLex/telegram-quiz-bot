@@ -25,7 +25,7 @@ async def command_start(message: Message) -> None:
 
     await message.answer(
         'Привет! Готов проверить знания?',
-        reply_markup=await quiz_service.get_kb(),
+        reply_markup=quiz_service.get_welcome_keyboard(),
     )
 
 

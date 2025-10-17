@@ -1,4 +1,5 @@
-from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
+from aiogram.types import Message, ReplyKeyboardMarkup
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from src.database import db
 from src.questions import questions_and_answers
@@ -18,20 +19,17 @@ class QuizService:
     async def add_gamer(self, message: Message) -> None:
         db.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
-    def _generate_keyboard(self, button_grid: list[list[KeyboardButton]]) -> ReplyKeyboardMarkup:
-        keyboard: ReplyKeyboardMarkup = ReplyKeyboardMarkup(
-            keyboard=button_grid,
+    def get_welcome_keyboard(self) -> ReplyKeyboardMarkup:
+        return self._build_keyboard(['Начать викторину'])
+
+    def _build_keyboard(self, button_texts: list[str]) -> ReplyKeyboardMarkup:
+        keyboard_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
+
+        for text in button_texts:
+            keyboard_builder.button(text=text)
+        keyboard_builder.adjust(1)
+
+        return keyboard_builder.as_markup(
             resize_keyboard=True,
             input_field_placeholder='Выберите вариант:',  # подсказка в поле ввода
         )
-
-        return keyboard
-
-    async def get_kb(self) -> ReplyKeyboardMarkup:
-        button: KeyboardButton = KeyboardButton(text='Начать викторину')
-
-        button_grid: list[list[KeyboardButton]] = [
-            [button],
-        ]
-
-        return self._generate_keyboard(button_grid)
