@@ -12,7 +12,7 @@ async def add_gamer(message: Message) -> None:
 
 
 async def get_question(user_id: int, message: Message) -> Message:
-    index_question: int = db.get_index_question(user_id)
+    index_question: int = db.get_current_question_id(user_id)
     text_question, answer_options_keyboard = questions.generate_question(index_question)
 
     return await message.answer(text_question, reply_markup=answer_options_keyboard)
@@ -42,7 +42,7 @@ async def reset_result(user_id: int, message: Message) -> Message:
 
 
 async def next_question(user_id: int, message: Message) -> Message:
-    index_question: int = db.get_index_question(user_id)
+    index_question: int = db.get_current_question_id(user_id)
     if questions.next_index_out_of_range(index_question):
         return await end_quiz(message)
 

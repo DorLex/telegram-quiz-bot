@@ -4,6 +4,9 @@ from aiogram import F, Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
+from src.bll.filters.answer_options import InAnswerOptionsFilter
+from src.bll.filters.right_answer import RightAnswerFilter
+
 logger: Logger = getLogger(__name__)
 
 router: Router = Router(name=__name__)
@@ -19,11 +22,21 @@ async def command_start(message: Message) -> None:
     await message.answer('Привет)')
 
 
+@router.message(F.text, RightAnswerFilter())
+async def right_answer(message: Message) -> None:
+    await message.answer('OK')
+
+
+@router.message(F.text, InAnswerOptionsFilter())
+async def in_answer_options(message: Message) -> None:
+    await message.answer('Неверный ответ!')
+
+
 @router.message(F.text)
-async def text_handler(message: Message) -> None:
-    await message.answer(message.text)
+async def random_text(message: Message) -> None:
+    await message.answer('Нет такого варианта!')
 
 
-@router.message()
+@router.message(~F.text)
 async def other_handler(message: Message) -> None:
     await message.answer('🛑 Данный тип сообщения не обрабатывается!')

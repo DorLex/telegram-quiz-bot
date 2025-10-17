@@ -28,12 +28,12 @@ class Database:
                 (user_id, user_name, user_name),
             )
 
-    def get_index_question(self, user_id: int) -> int:
+    def get_current_question_id(self, user_id: int) -> int:
         with self.database:
             self.cursor.execute(
                 """
-                SELECT index_question 
-                FROM users 
+                SELECT index_question
+                FROM users
                 WHERE id == (?);
                 """,
                 (user_id,),
@@ -46,8 +46,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                UPDATE users 
-                SET index_question = index_question + 1 
+                UPDATE users
+                SET index_question = index_question + 1
                 WHERE id == (?);
                 """,
                 (user_id,),
@@ -57,8 +57,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                UPDATE users 
-                SET index_question = (?) 
+                UPDATE users
+                SET index_question = (?)
                 WHERE id == (?);
                 """,
                 (0, user_id),
@@ -68,8 +68,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                SELECT score 
-                FROM users 
+                SELECT score
+                FROM users
                 WHERE id == (?);
                 """,
                 (user_id,),
@@ -82,8 +82,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                UPDATE users 
-                SET score = score + 1 
+                UPDATE users
+                SET score = score + 1
                 WHERE id == (?);
                 """,
                 (user_id,),
@@ -93,8 +93,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                UPDATE users 
-                SET score = (?) 
+                UPDATE users
+                SET score = (?)
                 WHERE id == (?);
                 """,
                 (0, user_id),
@@ -104,8 +104,8 @@ class Database:
         with self.database:
             self.cursor.execute(
                 """
-                SELECT name, score 
-                FROM users 
+                SELECT name, score
+                FROM users
                 ORDER BY score DESC
                 LIMIT 10;
                 """,

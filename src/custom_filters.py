@@ -13,7 +13,7 @@ class RightAnswerFilter(BoundFilter):
         self.right_answer = right_answer
 
     async def check(self, message: Message) -> bool:
-        index_question: int = db.get_index_question(message.from_user.id)
+        index_question: int = db.get_current_question_id(message.from_user.id)
         return message.text == questions.get_right_answer(index_question)
 
 
@@ -24,7 +24,7 @@ class InAnswerOptionsFilter(BoundFilter):
         self.in_answer_options = in_answer_options
 
     async def check(self, message: Message) -> bool:
-        index_question: int = db.get_index_question(message.from_user.id)
+        index_question: int = db.get_current_question_id(message.from_user.id)
         return message.text in questions.get_answer_options(index_question)
 
 
