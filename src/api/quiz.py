@@ -7,7 +7,6 @@ from aiogram.types import Message
 from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
 from src.bll.quiz import QuizService
-from src.dal.buttons import start_keyboard
 
 logger: Logger = getLogger(__name__)
 
@@ -26,7 +25,7 @@ async def command_start(message: Message) -> None:
 
     await message.answer(
         'Привет! Готов проверить знания?',
-        reply_markup=start_keyboard,
+        reply_markup=await quiz_service.get_kb(),
     )
 
 
