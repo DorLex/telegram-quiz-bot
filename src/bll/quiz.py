@@ -14,3 +14,6 @@ class QuizService:
         question_id: int = db.get_current_question_id(message.from_user.id)
         answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
         return message.text in answer_options
+
+    async def add_gamer(self, message: Message) -> None:
+        db.create_or_update_user(message.from_user.id, message.from_user.full_name)
