@@ -1,7 +1,7 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from src.core.constants import START_MSG
+from src.core.constants import START_MSG, EndKeyboardEnum
 from src.database import db
 from src.questions import questions_and_answers
 
@@ -44,3 +44,18 @@ class QuizService:
         keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
 
         return text_question, keyboard
+
+    async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
+        score: int = db.get_score(message.from_user.id)
+
+        result: str = f'Правильно {score} из {len(questions_and_answers)}'
+
+        keyboard: ReplyKeyboardMarkup = self._build_keyboard(
+            [
+                EndKeyboardEnum.show_result,
+                EndKeyboardEnum.show_leaderboard,
+                EndKeyboardEnum.new_game,
+            ],
+        )
+
+        return result, keyboard

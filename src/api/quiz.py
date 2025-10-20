@@ -7,7 +7,7 @@ from aiogram.types import Message
 from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
 from src.bll.quiz import QuizService
-from src.core.constants import START_MSG
+from src.core.constants import START_MSG, EndKeyboardEnum
 
 logger: Logger = getLogger(__name__)
 
@@ -43,12 +43,29 @@ async def start_quiz(message: Message) -> None:
 
 @router.message(F.text, RightAnswerFilter())
 async def right_answer(message: Message) -> None:
+    # quiz_service: QuizService = QuizService()
+    # await quiz_service.do_plus()
+
     await message.answer('OK')
 
 
 @router.message(F.text, InAnswerOptionsFilter())
 async def in_answer_options(message: Message) -> None:
+    # quiz_service: QuizService = QuizService()
+    # await quiz_service.do_minus()
+
     await message.answer('Неверный ответ!')
+
+
+@router.message(F.text.contains(EndKeyboardEnum.show_result))
+async def show_result(message: Message) -> None:
+    quiz_service: QuizService = QuizService()
+    result, keyboard = await quiz_service.show_result(message)
+
+    await message.answer(
+        result,
+        reply_markup=keyboard,
+    )
 
 
 @router.message(F.text)
