@@ -68,6 +68,17 @@ async def show_result(message: Message) -> None:
     )
 
 
+@router.message(F.text.contains(EndKeyboardEnum.show_leaderboard))
+async def show_leaderboard(message: Message) -> None:
+    quiz_service: QuizService = QuizService()
+    leaderboard, keyboard = await quiz_service.show_leaderboard()
+
+    await message.answer(
+        leaderboard,
+        reply_markup=keyboard,
+    )
+
+
 @router.message(F.text)
 async def random_text(message: Message) -> None:
     await message.answer('Нет такого варианта!')

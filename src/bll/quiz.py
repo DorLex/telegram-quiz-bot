@@ -59,3 +59,22 @@ class QuizService:
         )
 
         return result, keyboard
+
+    async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
+        top_10_users_results: list[tuple] = db.get_top_10_users_results()
+
+        leaderboard: str = ''
+        num_place = 1
+        for user_name, score in top_10_users_results:
+            leaderboard += f'{num_place}. {user_name} : {score}\n'
+            num_place += 1
+
+        keyboard: ReplyKeyboardMarkup = self._build_keyboard(
+            [
+                EndKeyboardEnum.show_result,
+                EndKeyboardEnum.show_leaderboard,
+                EndKeyboardEnum.new_game,
+            ],
+        )
+
+        return leaderboard, keyboard
