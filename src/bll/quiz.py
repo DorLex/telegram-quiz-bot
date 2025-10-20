@@ -1,6 +1,7 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from src.core.constants import START_MSG
 from src.database import db
 from src.questions import questions_and_answers
 
@@ -20,7 +21,7 @@ class QuizService:
         db.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
     def get_welcome_keyboard(self) -> ReplyKeyboardMarkup:
-        return self._build_keyboard(['Начать викторину'])
+        return self._build_keyboard([START_MSG])
 
     def _build_keyboard(self, button_texts: list[str]) -> ReplyKeyboardMarkup:
         keyboard_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
@@ -33,3 +34,13 @@ class QuizService:
             resize_keyboard=True,
             input_field_placeholder='Выберите вариант:',  # подсказка в поле ввода
         )
+
+    async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
+        question_id: int = db.get_current_question_id(message.from_user.id)
+
+        text_question: str = questions_and_answers.get(question_id)['text']
+        answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
+
+        keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
+
+        return text_question, keyboard
