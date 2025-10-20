@@ -20,8 +20,35 @@ class QuizService:
     async def add_gamer(self, message: Message) -> None:
         db.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
-    def get_welcome_keyboard(self) -> ReplyKeyboardMarkup:
-        return self._build_keyboard([START_MSG])
+    async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
+        question_id: int = db.get_current_question_id(message.from_user.id)
+
+        text_question: str = questions_and_answers.get(question_id)['text']
+        answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
+
+        keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
+
+        return text_question, keyboard
+
+    async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
+        score: int = db.get_score(message.from_user.id)
+        result: str = f'Правильно {score} из {len(questions_and_answers)}'
+        keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
+
+        return result, keyboard
+
+    async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
+        top_10_users_results: list[tuple] = db.get_top_10_users_results()
+
+        leaderboard: str = ''
+        num_place = 1
+        for user_name, score in top_10_users_results:
+            leaderboard += f'{num_place}. {user_name} : {score}\n'
+            num_place += 1
+
+        keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
+
+        return leaderboard, keyboard
 
     def _build_keyboard(self, button_texts: list[str]) -> ReplyKeyboardMarkup:
         keyboard_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
@@ -35,46 +62,14 @@ class QuizService:
             input_field_placeholder='Выберите вариант:',  # подсказка в поле ввода
         )
 
-    async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        question_id: int = db.get_current_question_id(message.from_user.id)
+    def get_welcome_keyboard(self) -> ReplyKeyboardMarkup:
+        return self._build_keyboard([START_MSG])
 
-        text_question: str = questions_and_answers.get(question_id)['text']
-        answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
-
-        keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
-
-        return text_question, keyboard
-
-    async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        score: int = db.get_score(message.from_user.id)
-
-        result: str = f'Правильно {score} из {len(questions_and_answers)}'
-
-        keyboard: ReplyKeyboardMarkup = self._build_keyboard(
+    def _get_end_keyboard(self) -> ReplyKeyboardMarkup:
+        return self._build_keyboard(
             [
                 EndKeyboardEnum.show_result,
                 EndKeyboardEnum.show_leaderboard,
                 EndKeyboardEnum.new_game,
             ],
         )
-
-        return result, keyboard
-
-    async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
-        top_10_users_results: list[tuple] = db.get_top_10_users_results()
-
-        leaderboard: str = ''
-        num_place = 1
-        for user_name, score in top_10_users_results:
-            leaderboard += f'{num_place}. {user_name} : {score}\n'
-            num_place += 1
-
-        keyboard: ReplyKeyboardMarkup = self._build_keyboard(
-            [
-                EndKeyboardEnum.show_result,
-                EndKeyboardEnum.show_leaderboard,
-                EndKeyboardEnum.new_game,
-            ],
-        )
-
-        return leaderboard, keyboard
