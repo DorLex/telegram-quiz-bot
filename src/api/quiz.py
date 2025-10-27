@@ -54,10 +54,13 @@ async def right_answer(message: Message) -> None:
 
 @router.message(F.text, InAnswerOptionsFilter())
 async def in_answer_options(message: Message) -> None:
-    # quiz_service: QuizService = QuizService()
-    # await quiz_service.do_minus()
+    quiz_service: QuizService = QuizService()
+    text, keyboard = await quiz_service.next_question(message)
 
-    await message.answer('Неверный ответ!')
+    await message.answer(
+        text,
+        reply_markup=keyboard,
+    )
 
 
 @router.message(F.text.contains(EndKeyboardEnum.show_result))

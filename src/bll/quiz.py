@@ -32,7 +32,9 @@ class QuizService:
 
     async def add_point(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         db.add_point(message.from_user.id)
+        return await self.next_question(message)
 
+    async def next_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         question_id: int = db.get_current_question_id(message.from_user.id)
         if question_id >= len(questions_and_answers) - 1:
             text: str = 'Вы прошли викторину!'
