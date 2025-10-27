@@ -1,7 +1,7 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from src.core.constants import START_MSG, EndKeyboardEnum
+from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
 from src.database import db
 from src.questions import questions_and_answers
 
@@ -37,9 +37,8 @@ class QuizService:
     async def next_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         question_id: int = db.get_current_question_id(message.from_user.id)
         if question_id >= len(questions_and_answers) - 1:
-            text: str = 'Вы прошли викторину!'
             keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
-            return text, keyboard
+            return END_MSG, keyboard
 
         db.update_question_id(message.from_user.id)
         return await self.get_current_question(message)

@@ -4,6 +4,7 @@ from pathlib import Path
 BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
 START_MSG: str = 'Начать викторину'
+END_MSG: str = 'Вы прошли викторину!'
 
 
 class EndKeyboardEnum(StrEnum):
