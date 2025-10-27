@@ -43,10 +43,13 @@ async def start_quiz(message: Message) -> None:
 
 @router.message(F.text, RightAnswerFilter())
 async def right_answer(message: Message) -> None:
-    # quiz_service: QuizService = QuizService()
-    # await quiz_service.do_plus()
+    quiz_service: QuizService = QuizService()
+    text, keyboard = await quiz_service.add_point(message)
 
-    await message.answer('OK')
+    await message.answer(
+        text,
+        reply_markup=keyboard,
+    )
 
 
 @router.message(F.text, InAnswerOptionsFilter())

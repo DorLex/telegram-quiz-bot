@@ -30,6 +30,18 @@ class QuizService:
 
         return text_question, keyboard
 
+    async def add_point(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
+        db.add_point(message.from_user.id)
+
+        question_id: int = db.get_current_question_id(message.from_user.id)
+        if question_id >= len(questions_and_answers) - 1:
+            text: str = 'Вы прошли викторину!'
+            keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
+            return text, keyboard
+
+        db.update_question_id(message.from_user.id)
+        return await self.get_current_question(message)
+
     async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         score: int = db.get_score(message.from_user.id)
         result: str = f'Правильно {score} из {len(questions_and_answers)}'

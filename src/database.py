@@ -42,7 +42,7 @@ class Database:
             index_question: int = self.cursor.fetchone()[0]
             return index_question
 
-    def update_index_question(self, user_id: int) -> None:
+    def update_question_id(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """
@@ -78,7 +78,7 @@ class Database:
             score: int = self.cursor.fetchone()[0]
             return score
 
-    def update_score(self, user_id: int) -> None:
+    def add_point(self, user_id: int) -> None:
         with self.database:
             self.cursor.execute(
                 """

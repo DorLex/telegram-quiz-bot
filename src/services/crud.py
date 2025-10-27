@@ -46,13 +46,13 @@ async def next_question(user_id: int, message: Message) -> Message:
     if questions.next_index_out_of_range(index_question):
         return await end_quiz(message)
 
-    db.update_index_question(user_id)
+    db.update_question_id(user_id)
 
     return await get_question(user_id, message)
 
 
 async def add_point(user_id: int, message: Message) -> Message:
-    db.update_score(user_id)
+    db.add_point(user_id)
     return await next_question(user_id, message)
 
 
