@@ -1,10 +1,18 @@
 import sqlite3 as sql
+from logging import Logger, getLogger
 from sqlite3 import Connection, Cursor
+
+logger: Logger = getLogger(__name__)
+
+
+def log_query(query: str) -> None:
+    logger.info(f'Выполняется SQL: {query}')
 
 
 class Database:
     def __init__(self, db_file: str) -> None:
         self.conn: Connection = sql.connect(db_file)
+        self.conn.set_trace_callback(log_query)
 
         with self.conn:
             self.cursor: Cursor = self.conn.cursor()

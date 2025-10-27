@@ -41,28 +41,6 @@ async def start_quiz(message: Message) -> None:
     )
 
 
-@router.message(F.text, RightAnswerFilter())
-async def right_answer(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
-    text, keyboard = await quiz_service.add_point(message)
-
-    await message.answer(
-        text,
-        reply_markup=keyboard,
-    )
-
-
-@router.message(F.text, InAnswerOptionsFilter())
-async def in_answer_options(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
-    text, keyboard = await quiz_service.next_question(message)
-
-    await message.answer(
-        text,
-        reply_markup=keyboard,
-    )
-
-
 @router.message(F.text.contains(EndKeyboardEnum.show_result))
 async def show_result(message: Message) -> None:
     quiz_service: QuizService = QuizService()
@@ -89,6 +67,28 @@ async def show_leaderboard(message: Message) -> None:
 async def new_game(message: Message) -> None:
     quiz_service: QuizService = QuizService()
     text, keyboard = await quiz_service.new_game(message)
+
+    await message.answer(
+        text,
+        reply_markup=keyboard,
+    )
+
+
+@router.message(F.text, RightAnswerFilter())
+async def right_answer(message: Message) -> None:
+    quiz_service: QuizService = QuizService()
+    text, keyboard = await quiz_service.add_point(message)
+
+    await message.answer(
+        text,
+        reply_markup=keyboard,
+    )
+
+
+@router.message(F.text, InAnswerOptionsFilter())
+async def in_answer_options(message: Message) -> None:
+    quiz_service: QuizService = QuizService()
+    text, keyboard = await quiz_service.next_question(message)
 
     await message.answer(
         text,
