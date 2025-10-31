@@ -5,7 +5,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import Message
 
 from src.bll.utils.db.logs import log_query
-from src.core.db.setup import connection
+from src.core.db.setup import connection_factory
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -15,9 +15,10 @@ class DatabaseMiddleware(BaseMiddleware):
         event: Message,
         data: dict[str, Any],
     ) -> Any:
-        async with connection as conn:
+        async with connection_factory() as conn:
             await conn.set_trace_callback(log_query)
-
             data['db'] = conn
 
-            return await handler(event, data)
+            result: Any = await handler(event, data)
+
+        return result

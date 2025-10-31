@@ -15,7 +15,7 @@ def log_query(query: str) -> None:
 
 
 async def main() -> None:
-    connection: Connection = aiosqlite.connect('./database.db')
+    connection: Connection = aiosqlite.connect('database.sqlite3')
 
     async with connection as conn:
         conn: Connection

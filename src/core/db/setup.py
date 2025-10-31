@@ -3,4 +3,6 @@ from aiosqlite import Connection
 
 from src.core.constants import BASE_DIR
 
-connection: Connection = aiosqlite.connect(BASE_DIR / 'database.db')
+
+def connection_factory() -> Connection:
+    return aiosqlite.connect(BASE_DIR / 'database.sqlite3')
