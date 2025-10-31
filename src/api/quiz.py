@@ -3,6 +3,7 @@ from logging import Logger, getLogger
 from aiogram import F, Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiosqlite import Connection
 
 from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
@@ -20,7 +21,7 @@ router: Router = Router(name=__name__)
 
 
 @router.message(CommandStart())
-async def command_start(message: Message) -> None:
+async def command_start(message: Message, db: Connection) -> None:
     quiz_service: QuizService = QuizService()
     await quiz_service.add_gamer(message)
 

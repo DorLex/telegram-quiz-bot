@@ -15,7 +15,9 @@ def log_query(query: str) -> None:
 
 
 async def main() -> None:
-    async with aiosqlite.connect('./database.db') as conn:
+    connection: Connection = aiosqlite.connect('./database.db')
+
+    async with connection as conn:
         conn: Connection
 
         await conn.set_trace_callback(log_query)
