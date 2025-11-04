@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from src.api import bot_router
+from src.core.db.init import init_db
 from src.core.logging_config import setup_logging
 from src.core.middlewares.db import DatabaseMiddleware
 from src.core.settings import config
@@ -13,6 +14,8 @@ setup_logging()
 
 
 async def main() -> None:
+    await init_db()
+
     dp: Dispatcher = Dispatcher()
     dp.message.middleware.register(DatabaseMiddleware())
     dp.include_router(bot_router)

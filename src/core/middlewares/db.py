@@ -4,8 +4,8 @@ from typing import Any
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from src.bll.utils.db.logs import log_query
-from src.core.db.setup import connection_factory
+from src.core.db.logs import log_query
+from src.core.db.setup import connection_factory, row_dict_factory
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -15,9 +15,11 @@ class DatabaseMiddleware(BaseMiddleware):
         event: Message,
         data: dict[str, Any],
     ) -> Any:
-        async with connection_factory() as conn:
-            await conn.set_trace_callback(log_query)
-            data['db'] = conn
+        async with connection_factory() as db:
+            db.row_factory = row_dict_factory
+            await db.set_trace_callback(log_query)
+
+            data['db'] = db
 
             result: Any = await handler(event, data)
 

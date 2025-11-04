@@ -2,9 +2,16 @@ from aiogram.filters import Filter
 from aiogram.types import Message
 
 from src.bll.quiz import QuizService
+from src.core.db.logs import log_query
+from src.core.db.setup import connection_factory, row_dict_factory
+from src.dal.quiz import QuizRepository
 
 
 class RightAnswerFilter(Filter):
     async def __call__(self, message: Message) -> dict | bool:
-        quiz_service: QuizService = QuizService()
-        return await quiz_service.is_right_answer(message)
+        async with connection_factory() as db:
+            db.row_factory = row_dict_factory
+            await db.set_trace_callback(log_query)
+
+            quiz_service: QuizService = QuizService(QuizRepository(db))
+            return await quiz_service.is_right_answer(message)

@@ -8,24 +8,25 @@ class Database:
 
         with self.conn:
             self.cursor: Cursor = self.conn.cursor()
-            self.cursor.execute(
-                """
-                CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY,
-                name TEXT NOT NULL,
-                index_question INTEGER NOT NULL DEFAULT 0,
-                score INTEGER NOT NULL DEFAULT 0
-                );
-                """,
-            )
+
+        #     self.cursor.execute(
+        #         """
+        #         CREATE TABLE IF NOT EXISTS user (
+        #           id INTEGER PRIMARY KEY,
+        #           name TEXT NOT NULL,
+        #           question_id INTEGER NOT NULL DEFAULT 0,
+        #           score INTEGER NOT NULL DEFAULT 0
+        #         );
+        #         """,
+        #     )
 
     def create_or_update_user(self, user_id: int, user_name: str) -> None:
         with self.conn:
             self.cursor.execute(
                 """
-                INSERT INTO users (id, name) VALUES (?, ?)
-                ON CONFLICT (id) DO
-                UPDATE SET name = (?);
+                INSERT INTO user (id, name) VALUES (?, ?)
+                  ON CONFLICT (id) DO
+                  UPDATE SET name = (?);
                 """,
                 (user_id, user_name, user_name),
             )
@@ -34,59 +35,60 @@ class Database:
         with self.conn:
             self.cursor.execute(
                 """
-                SELECT index_question
-                FROM users
-                WHERE id == (?);
+                SELECT question_id
+                  FROM user
+                  WHERE id == (?);
                 """,
                 (user_id,),
             )
 
-            index_question: int = self.cursor.fetchone()[0]
-            return index_question
+            question_id: int = self.cursor.fetchone()[0]
+            return question_id
 
     def update_question_id(self, user_id: int) -> None:
         with self.conn:
             self.cursor.execute(
                 """
-                UPDATE users
-                SET index_question = index_question + 1
-                WHERE id == (?);
+                UPDATE user
+                  SET question_id = question_id + 1
+                  WHERE id == (?);
                 """,
                 (user_id,),
             )
 
-    def reset_index_question(self, user_id: int) -> None:
+    def reset_question_id(self, user_id: int) -> None:
         with self.conn:
             self.cursor.execute(
                 """
-                UPDATE users
-                SET index_question = (?)
-                WHERE id == (?);
+                UPDATE user
+                  SET question_id = (?)
+                  WHERE id == (?);
                 """,
                 (0, user_id),
             )
 
-    def get_score(self, user_id: int) -> int:
-        with self.conn:
-            self.cursor.execute(
-                """
-                SELECT score
-                FROM users
-                WHERE id == (?);
-                """,
-                (user_id,),
-            )
-
-            score: int = self.cursor.fetchone()[0]
-            return score
+    # def get_score(self, user_id: int) -> int:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             SELECT score
+    #               FROM user
+    #               WHERE id == (?);
+    #             """,
+    #             (user_id,),
+    #         )
+    #
+    #         score: int = self.cursor.fetchone()[0]
+    #
+    #     return score
 
     def add_point(self, user_id: int) -> None:
         with self.conn:
             self.cursor.execute(
                 """
-                UPDATE users
-                SET score = score + 1
-                WHERE id == (?);
+                UPDATE user
+                  SET score = score + 1
+                  WHERE id == (?);
                 """,
                 (user_id,),
             )
@@ -95,9 +97,9 @@ class Database:
         with self.conn:
             self.cursor.execute(
                 """
-                UPDATE users
-                SET score = (?)
-                WHERE id == (?);
+                UPDATE user
+                  SET score = (?)
+                  WHERE id == (?);
                 """,
                 (0, user_id),
             )
@@ -107,9 +109,9 @@ class Database:
             self.cursor.execute(
                 """
                 SELECT name, score
-                FROM users
-                ORDER BY score DESC
-                LIMIT 10;
+                  FROM user
+                  ORDER BY score DESC
+                  LIMIT 10;
                 """,
             )
 

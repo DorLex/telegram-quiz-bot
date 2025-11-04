@@ -9,6 +9,7 @@ from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
 from src.bll.quiz import QuizService
 from src.core.constants import START_MSG, EndKeyboardEnum
+from src.dal.quiz import QuizRepository
 
 logger: Logger = getLogger(__name__)
 
@@ -22,7 +23,7 @@ router: Router = Router(name=__name__)
 
 @router.message(CommandStart())
 async def command_start(message: Message, db: Connection) -> None:
-    quiz_service: QuizService = QuizService()
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     await quiz_service.add_gamer(message)
 
     await message.answer(
@@ -32,8 +33,8 @@ async def command_start(message: Message, db: Connection) -> None:
 
 
 @router.message(F.text.contains(START_MSG))
-async def start_quiz(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def start_quiz(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     text_question, keyboard = await quiz_service.get_current_question(message)
 
     await message.answer(
@@ -43,8 +44,8 @@ async def start_quiz(message: Message) -> None:
 
 
 @router.message(F.text.contains(EndKeyboardEnum.show_result))
-async def show_result(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def show_result(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     result, keyboard = await quiz_service.show_result(message)
 
     await message.answer(
@@ -54,8 +55,8 @@ async def show_result(message: Message) -> None:
 
 
 @router.message(F.text.contains(EndKeyboardEnum.show_leaderboard))
-async def show_leaderboard(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def show_leaderboard(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     leaderboard, keyboard = await quiz_service.show_leaderboard()
 
     await message.answer(
@@ -65,8 +66,8 @@ async def show_leaderboard(message: Message) -> None:
 
 
 @router.message(F.text.contains(EndKeyboardEnum.new_game))
-async def new_game(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def new_game(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     text, keyboard = await quiz_service.new_game(message)
 
     await message.answer(
@@ -76,8 +77,8 @@ async def new_game(message: Message) -> None:
 
 
 @router.message(F.text, RightAnswerFilter())
-async def right_answer(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def right_answer(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     text, keyboard = await quiz_service.add_point(message)
 
     await message.answer(
@@ -87,8 +88,8 @@ async def right_answer(message: Message) -> None:
 
 
 @router.message(F.text, InAnswerOptionsFilter())
-async def in_answer_options(message: Message) -> None:
-    quiz_service: QuizService = QuizService()
+async def in_answer_options(message: Message, db: Connection) -> None:
+    quiz_service: QuizService = QuizService(QuizRepository(db))
     text, keyboard = await quiz_service.next_question(message)
 
     await message.answer(

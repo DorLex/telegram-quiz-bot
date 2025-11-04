@@ -1,12 +1,17 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from src.bll.dto.user import UserDTO
 from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
+from src.dal.quiz import QuizRepository
 from src.database import db
 from src.questions import questions_and_answers
 
 
 class QuizService:
+    def __init__(self, repository: QuizRepository) -> None:
+        self.repository = repository
+
     async def is_right_answer(self, message: Message) -> bool:
         question_id: int = db.get_current_question_id(message.from_user.id)
         right_answer: str = questions_and_answers.get(question_id)['right_answer']
@@ -44,8 +49,9 @@ class QuizService:
         return await self.get_current_question(message)
 
     async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        score: int = db.get_score(message.from_user.id)
-        result: str = f'Правильно {score} из {len(questions_and_answers)}'
+        user: UserDTO = await self.repository.get_user(message.from_user.id)
+
+        result: str = f'Правильно {user.score} из {len(questions_and_answers)}'
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
 
         return result, keyboard
@@ -65,7 +71,7 @@ class QuizService:
 
     async def new_game(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         db.reset_user_score(message.from_user.id)
-        db.reset_index_question(message.from_user.id)
+        db.reset_question_id(message.from_user.id)
 
         text: str = 'Счет обнулён. Желаете сыграть еще раз?'
         keyboard = self.get_welcome_keyboard()
