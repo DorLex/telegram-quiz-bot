@@ -5,8 +5,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from src.api import bot_router
-from src.bll.middlewares.db import DatabaseMiddleware
 from src.core.logging_config import setup_logging
+from src.core.middlewares.db import DatabaseMiddleware
 from src.core.settings import config
 
 setup_logging()
