@@ -13,23 +13,24 @@ class QuizService:
         self.repository = repository
 
     async def is_right_answer(self, message: Message) -> bool:
-        question_id: int = db.get_current_question_id(message.from_user.id)
-        right_answer: str = questions_and_answers.get(question_id)['right_answer']
+        user: UserDTO = await self.repository.get_user(message.from_user.id)
+        right_answer: str = questions_and_answers.get(user.question_id)['right_answer']
         return message.text == right_answer
 
     async def in_answer_options(self, message: Message) -> bool:
-        question_id: int = db.get_current_question_id(message.from_user.id)
-        answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
+        user: UserDTO = await self.repository.get_user(message.from_user.id)
+        answer_options: list[str] = questions_and_answers.get(user.question_id)['answer_options']
         return message.text in answer_options
 
     async def add_gamer(self, message: Message) -> None:
         db.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
     async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        question_id: int = db.get_current_question_id(message.from_user.id)
+        user: UserDTO = await self.repository.get_user(message.from_user.id)
 
-        text_question: str = questions_and_answers.get(question_id)['text']
-        answer_options: list[str] = questions_and_answers.get(question_id)['answer_options']
+        question: dict[str, str | list[str]] = questions_and_answers[user.question_id]
+        text_question: str = question['text']
+        answer_options: list[str] = question['answer_options']
 
         keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
 
@@ -40,8 +41,9 @@ class QuizService:
         return await self.next_question(message)
 
     async def next_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        question_id: int = db.get_current_question_id(message.from_user.id)
-        if question_id >= len(questions_and_answers) - 1:
+        user: UserDTO = await self.repository.get_user(message.from_user.id)
+
+        if user.question_id >= len(questions_and_answers) - 1:
             keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
             return END_MSG, keyboard
 
@@ -57,16 +59,15 @@ class QuizService:
         return result, keyboard
 
     async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
-        top_10_users_results: list[tuple] = db.get_top_10_users_results()
+        top_10_users_result: list[dict] = await self.repository.get_top_10_users_result()
 
         leaderboard: str = ''
         num_place = 1
-        for user_name, score in top_10_users_results:
-            leaderboard += f'{num_place}. {user_name} : {score}\n'
+        for result in top_10_users_result:
+            leaderboard += f'{num_place}. {result["name"]}: {result["score"]}\n'
             num_place += 1
 
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
-
         return leaderboard, keyboard
 
     async def new_game(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:

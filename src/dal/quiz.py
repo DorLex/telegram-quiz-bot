@@ -21,3 +21,16 @@ class QuizRepository:
         # TODO вызвать исключение, когда result=None
 
         return UserDTO(**result)
+
+    async def get_top_10_users_result(self) -> list[dict]:
+        query: str = """
+            SELECT name, score
+              FROM user
+              ORDER BY score DESC
+              LIMIT 10;
+            """
+
+        async with self.db.execute(query) as cursor:
+            result: list[dict] | None = await cursor.fetchall()
+
+        return result

@@ -31,19 +31,19 @@ class Database:
                 (user_id, user_name, user_name),
             )
 
-    def get_current_question_id(self, user_id: int) -> int:
-        with self.conn:
-            self.cursor.execute(
-                """
-                SELECT question_id
-                  FROM user
-                  WHERE id == (?);
-                """,
-                (user_id,),
-            )
-
-            question_id: int = self.cursor.fetchone()[0]
-            return question_id
+    # def get_current_question_id(self, user_id: int) -> int:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             SELECT question_id
+    #               FROM user
+    #               WHERE id == (?);
+    #             """,
+    #             (user_id,),
+    #         )
+    #
+    #         question_id: int = self.cursor.fetchone()[0]
+    #     return question_id
 
     def update_question_id(self, user_id: int) -> None:
         with self.conn:
@@ -104,19 +104,19 @@ class Database:
                 (0, user_id),
             )
 
-    def get_top_10_users_results(self) -> list[tuple]:
-        with self.conn:
-            self.cursor.execute(
-                """
-                SELECT name, score
-                  FROM user
-                  ORDER BY score DESC
-                  LIMIT 10;
-                """,
-            )
-
-            results: list[tuple] = self.cursor.fetchall()
-            return results
+    # def get_top_10_users_results(self) -> list[tuple]:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             SELECT name, score
+    #               FROM user
+    #               ORDER BY score DESC
+    #               LIMIT 10;
+    #             """,
+    #         )
+    #
+    #         results: list[tuple] = self.cursor.fetchall()
+    #     return results
 
 
 db = Database('database.sqlite3')
