@@ -93,16 +93,16 @@ class Database:
                 (user_id,),
             )
 
-    def reset_user_score(self, user_id: int) -> None:
-        with self.conn:
-            self.cursor.execute(
-                """
-                UPDATE user
-                  SET score = (?)
-                  WHERE id == (?);
-                """,
-                (0, user_id),
-            )
+    # def reset_user_score(self, user_id: int) -> None:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             UPDATE user
+    #               SET score = (?)
+    #               WHERE id == (?);
+    #             """,
+    #             (0, user_id),
+    #         )
 
     # def get_top_10_users_results(self) -> list[tuple]:
     #     with self.conn:
