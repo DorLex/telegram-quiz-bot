@@ -1,7 +1,7 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from src.bll.dto.user import UserDTO
+from src.bll.dto.user import UserDTO, UserResultDTO
 from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
 from src.dal.quiz import QuizRepository
 from src.questions import questions_and_answers
@@ -58,12 +58,12 @@ class QuizService:
         return result, keyboard
 
     async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
-        top_10_users_result: list[dict] = await self.repository.get_top_10_users_result()
+        top_10_users_result: list[UserResultDTO] = await self.repository.get_top_10_users_result()
 
         leaderboard: str = ''
         num_place = 1
         for result in top_10_users_result:
-            leaderboard += f'{num_place}. {result["name"]}: {result["score"]}\n'
+            leaderboard += f'{num_place}. {result.name}: {result.score}\n'
             num_place += 1
 
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()

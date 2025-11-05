@@ -1,6 +1,6 @@
 from aiosqlite import Connection
 
-from src.bll.dto.user import UserDTO
+from src.bll.dto.user import UserDTO, UserResultDTO
 
 
 class QuizRepository:
@@ -34,7 +34,7 @@ class QuizRepository:
 
         return UserDTO(**result)
 
-    async def get_top_10_users_result(self) -> list[dict]:
+    async def get_top_10_users_result(self) -> list[UserResultDTO]:
         query: str = """
             SELECT name, score
               FROM user
@@ -43,9 +43,9 @@ class QuizRepository:
             """
 
         async with self.db.execute(query) as cursor:
-            result: list[dict] | None = await cursor.fetchall()
+            results: list[dict] | None = await cursor.fetchall()
 
-        return result
+        return [UserResultDTO(**result) for result in results]
 
     async def increase_question_id(self, user_id: int) -> None:
         query: str = """

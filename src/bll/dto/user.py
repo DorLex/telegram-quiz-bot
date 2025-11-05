@@ -6,3 +6,8 @@ class UserDTO(BaseModel):
     name: str
     question_id: int
     score: int
+
+
+class UserResultDTO(BaseModel):
+    name: str
+    score: int
