@@ -72,7 +72,7 @@ class QuizService:
 
     async def new_game(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         db.reset_user_score(message.from_user.id)
-        db.reset_question_id(message.from_user.id)
+        await self.repository.reset_question_id(message.from_user.id)
 
         text: str = 'Счет обнулён. Желаете сыграть еще раз?'
         keyboard = self.get_welcome_keyboard()

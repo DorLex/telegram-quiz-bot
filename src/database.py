@@ -56,16 +56,16 @@ class Database:
     #             (user_id,),
     #         )
 
-    def reset_question_id(self, user_id: int) -> None:
-        with self.conn:
-            self.cursor.execute(
-                """
-                UPDATE user
-                  SET question_id = (?)
-                  WHERE id == (?);
-                """,
-                (0, user_id),
-            )
+    # def reset_question_id(self, user_id: int) -> None:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             UPDATE user
+    #               SET question_id = (?)
+    #               WHERE id == (?);
+    #             """,
+    #             (0, user_id),
+    #         )
 
     # def get_score(self, user_id: int) -> int:
     #     with self.conn:
