@@ -7,13 +7,25 @@ class QuizRepository:
     def __init__(self, db: Connection) -> None:
         self.db = db
 
+    async def create_or_update_user(self, user_id: int, user_name: str) -> None:
+        query: str = """
+            INSERT INTO user (id, name)
+              VALUES (:id, :name)
+              ON CONFLICT (id) DO
+                UPDATE SET name = :name;
+            """
+        params: dict = {'id': user_id, 'name': user_name}
+
+        await self.db.execute(query, params)
+        await self.db.commit()
+
     async def get_user(self, user_id: int) -> UserDTO:
         query: str = """
             SELECT *
               FROM user
-              WHERE id == (?);
+              WHERE id == :id;
             """
-        params: tuple = (user_id,)
+        params: dict = {'id': user_id}
 
         async with self.db.execute(query, params) as cursor:
             result: dict | None = await cursor.fetchone()

@@ -1,5 +1,3 @@
-from aiosqlite import Cursor
-
 from src.core.db.logs import log_query
 from src.core.db.setup import connection_factory
 
@@ -17,6 +15,5 @@ async def init_db() -> None:
             );
             """
 
-        async with db.execute(query) as cursor:
-            cursor: Cursor
-            await cursor.execute(query)
+        await db.execute(query)
+        await db.commit()

@@ -20,16 +20,16 @@ class Database:
         #         """,
         #     )
 
-    def create_or_update_user(self, user_id: int, user_name: str) -> None:
-        with self.conn:
-            self.cursor.execute(
-                """
-                INSERT INTO user (id, name) VALUES (?, ?)
-                  ON CONFLICT (id) DO
-                  UPDATE SET name = (?);
-                """,
-                (user_id, user_name, user_name),
-            )
+    # def create_or_update_user(self, user_id: int, user_name: str) -> None:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             INSERT INTO user (id, name) VALUES (?, ?)
+    #               ON CONFLICT (id) DO
+    #               UPDATE SET name = (?);
+    #             """,
+    #             (user_id, user_name, user_name),
+    #         )
 
     # def get_current_question_id(self, user_id: int) -> int:
     #     with self.conn:

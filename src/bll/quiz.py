@@ -23,7 +23,7 @@ class QuizService:
         return message.text in answer_options
 
     async def add_gamer(self, message: Message) -> None:
-        db.create_or_update_user(message.from_user.id, message.from_user.full_name)
+        await self.repository.create_or_update_user(message.from_user.id, message.from_user.full_name)
 
     async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
