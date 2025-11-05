@@ -69,24 +69,15 @@ class QuizRepository:
         await self.db.execute(query, params)
         await self.db.commit()
 
-    async def reset_question_id(self, user_id: int) -> None:
+    async def reset_user_progress(self, user_id: int) -> None:
         query: str = """
             UPDATE user
-              SET question_id = :question_id
+              SET
+                question_id = :question_id,
+                score = :score
               WHERE id == :id;
             """
-        params: dict = {'question_id': 0, 'id': user_id}
-
-        await self.db.execute(query, params)
-        await self.db.commit()
-
-    async def reset_user_score(self, user_id: int) -> None:
-        query: str = """
-            UPDATE user
-              SET score = :score
-              WHERE id == :id;
-            """
-        params: dict = {'score': 0, 'id': user_id}
+        params: dict = {'question_id': 0, 'score': 0, 'id': user_id}
 
         await self.db.execute(query, params)
         await self.db.commit()
