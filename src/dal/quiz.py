@@ -46,3 +46,14 @@ class QuizRepository:
             result: list[dict] | None = await cursor.fetchall()
 
         return result
+
+    async def increase_question_id(self, user_id: int) -> None:
+        query: str = """
+            UPDATE user
+              SET question_id = question_id + 1
+              WHERE id == :id;
+            """
+        params: dict = {'id': user_id}
+
+        await self.db.execute(query, params)
+        await self.db.commit()

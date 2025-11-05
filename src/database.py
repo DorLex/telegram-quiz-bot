@@ -45,16 +45,16 @@ class Database:
     #         question_id: int = self.cursor.fetchone()[0]
     #     return question_id
 
-    def update_question_id(self, user_id: int) -> None:
-        with self.conn:
-            self.cursor.execute(
-                """
-                UPDATE user
-                  SET question_id = question_id + 1
-                  WHERE id == (?);
-                """,
-                (user_id,),
-            )
+    # def update_question_id(self, user_id: int) -> None:
+    #     with self.conn:
+    #         self.cursor.execute(
+    #             """
+    #             UPDATE user
+    #               SET question_id = question_id + 1
+    #               WHERE id == (?);
+    #             """,
+    #             (user_id,),
+    #         )
 
     def reset_question_id(self, user_id: int) -> None:
         with self.conn:

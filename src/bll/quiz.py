@@ -47,7 +47,7 @@ class QuizService:
             keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
             return END_MSG, keyboard
 
-        db.update_question_id(message.from_user.id)
+        await self.repository.increase_question_id(message.from_user.id)
         return await self.get_current_question(message)
 
     async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
