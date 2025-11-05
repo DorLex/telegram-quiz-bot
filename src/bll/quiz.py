@@ -4,7 +4,6 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from src.bll.dto.user import UserDTO
 from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
 from src.dal.quiz import QuizRepository
-from src.database import db
 from src.questions import questions_and_answers
 
 
@@ -37,7 +36,7 @@ class QuizService:
         return text_question, keyboard
 
     async def add_point(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        db.add_point(message.from_user.id)
+        await self.repository.add_point(message.from_user.id)
         return await self.next_question(message)
 
     async def next_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:

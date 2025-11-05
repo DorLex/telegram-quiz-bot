@@ -58,6 +58,17 @@ class QuizRepository:
         await self.db.execute(query, params)
         await self.db.commit()
 
+    async def add_point(self, user_id: int) -> None:
+        query: str = """
+            UPDATE user
+              SET score = score + 1
+              WHERE id == :id;
+            """
+        params: dict = {'id': user_id}
+
+        await self.db.execute(query, params)
+        await self.db.commit()
+
     async def reset_question_id(self, user_id: int) -> None:
         query: str = """
             UPDATE user
