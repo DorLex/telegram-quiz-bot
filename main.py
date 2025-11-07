@@ -8,7 +8,7 @@ from src.api import bot_router
 from src.bll.question import questions_loader
 from src.core.db.init import init_db
 from src.core.logging_config import setup_logging
-from src.core.middlewares.db import DatabaseMiddleware
+from src.core.middleware.db import DatabaseMiddleware
 from src.core.settings import config
 
 setup_logging()
