@@ -1,9 +1,18 @@
-.idea/
-.vscode/
-.venv/
+*~
+.*
+
+env/
 venv/
 __pycache__/
 
-.env
+*.env
+*.log
 *.db
 *.sqlite3
+
+!.gitignore
+!.gitkeep
+!example.env
+!.dockerignore
+!.editorconfig
+!.pre-commit-config.yaml
