@@ -5,6 +5,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiosqlite import Connection
 
+from src.bll.dto.user import UserDTO
 from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
 from src.bll.quiz import QuizService
@@ -30,7 +31,8 @@ async def command_start(message: Message, db: Connection) -> None:
 @router.message(F.text.contains(START_MSG))
 async def start_quiz(message: Message, db: Connection) -> None:
     quiz_service: QuizService = QuizService(QuizRepository(db))
-    text_question, keyboard = await quiz_service.get_current_question(message)
+    user: UserDTO = await quiz_service.get_user(message)
+    text_question, keyboard = await quiz_service.get_current_question(user)
 
     await message.answer(
         text_question,
@@ -41,7 +43,8 @@ async def start_quiz(message: Message, db: Connection) -> None:
 @router.message(F.text.contains(EndKeyboardEnum.show_result))
 async def show_result(message: Message, db: Connection) -> None:
     quiz_service: QuizService = QuizService(QuizRepository(db))
-    result, keyboard = await quiz_service.show_result(message)
+    user: UserDTO = await quiz_service.get_user(message)
+    result, keyboard = await quiz_service.show_result(user)
 
     await message.answer(
         result,
@@ -72,9 +75,9 @@ async def new_game(message: Message, db: Connection) -> None:
 
 
 @router.message(F.text, RightAnswerFilter())
-async def right_answer(message: Message, db: Connection) -> None:
+async def right_answer(message: Message, db: Connection, user: UserDTO) -> None:
     quiz_service: QuizService = QuizService(QuizRepository(db))
-    text, keyboard = await quiz_service.add_point(message)
+    text, keyboard = await quiz_service.add_point(user)
 
     await message.answer(
         text,
@@ -83,9 +86,9 @@ async def right_answer(message: Message, db: Connection) -> None:
 
 
 @router.message(F.text, InAnswerOptionsFilter())
-async def in_answer_options(message: Message, db: Connection) -> None:
+async def in_answer_options(message: Message, db: Connection, user: UserDTO) -> None:
     quiz_service: QuizService = QuizService(QuizRepository(db))
-    text, keyboard = await quiz_service.next_question(message)
+    text, keyboard = await quiz_service.next_question(user)
 
     await message.answer(
         text,
