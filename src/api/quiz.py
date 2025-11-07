@@ -8,17 +8,12 @@ from aiosqlite import Connection
 from src.bll.filters.answer_options import InAnswerOptionsFilter
 from src.bll.filters.right_answer import RightAnswerFilter
 from src.bll.quiz import QuizService
-from src.core.constants import START_MSG, EndKeyboardEnum
+from src.core.constants import START_MSG, WELCOME_MSG, EndKeyboardEnum
 from src.dal.quiz import QuizRepository
 
 logger: Logger = getLogger(__name__)
 
 router: Router = Router(name=__name__)
-
-
-# F.content_type == ContentType.DOCUMENT
-# F.document & F.caption
-# F.caption & (F.photo | F.video | F.document)
 
 
 @router.message(CommandStart())
@@ -27,7 +22,7 @@ async def command_start(message: Message, db: Connection) -> None:
     await quiz_service.add_gamer(message)
 
     await message.answer(
-        'Привет! Готов проверить знания?',
+        WELCOME_MSG,
         reply_markup=quiz_service.get_welcome_keyboard(),
     )
 
@@ -100,7 +95,7 @@ async def in_answer_options(message: Message, db: Connection) -> None:
 
 @router.message(F.text)
 async def random_text(message: Message) -> None:
-    await message.answer('Нет такого варианта!')
+    await message.answer('🤷‍♂️ Нет такого варианта!')
 
 
 @router.message(~F.text)

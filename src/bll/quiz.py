@@ -52,7 +52,7 @@ class QuizService:
     async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
 
-        result: str = f'Правильно {user.score} из {len(questions_and_answers)}'
+        result: str = f'🧮 Правильно {user.score} из {len(questions_and_answers)}'
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
 
         return result, keyboard
@@ -60,7 +60,7 @@ class QuizService:
     async def show_leaderboard(self) -> tuple[str, ReplyKeyboardMarkup]:
         top_10_users_result: list[UserResultDTO] = await self.repository.get_top_10_users_result()
 
-        leaderboard: str = ''
+        leaderboard: str = '🏆\n'
         num_place = 1
         for result in top_10_users_result:
             leaderboard += f'{num_place}. {result.name}: {result.score}\n'
@@ -70,11 +70,9 @@ class QuizService:
         return leaderboard, keyboard
 
     async def new_game(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
-        # await self.repository.reset_user_score(message.from_user.id)
-        # await self.repository.reset_question_id(message.from_user.id)
         await self.repository.reset_user_progress(message.from_user.id)
 
-        text: str = 'Счет обнулён. Желаете сыграть еще раз?'
+        text: str = '0️⃣ Счет обнулён. Желаете сыграть еще раз?'
         keyboard = self.get_welcome_keyboard()
 
         return text, keyboard
