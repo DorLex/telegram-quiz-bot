@@ -4,7 +4,7 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from src.bll.dto.question import Question
 from src.bll.dto.user import UserDTO, UserResultDTO
 from src.bll.question import questions_loader
-from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
+from src.core.constants import END_MSG, NEW_GAME_MSG, START_MSG, EndKeyboardEnum
 from src.dal.quiz import QuizRepository
 
 
@@ -59,21 +59,18 @@ class QuizService:
         top_10_users_result: list[UserResultDTO] = await self.repository.get_top_10_users_result()
 
         leaderboard: str = '🏆\n'
-        num_place = 1
+        position: int = 1
         for result in top_10_users_result:
-            leaderboard += f'{num_place}. {result.name}: {result.score}\n'
-            num_place += 1
+            leaderboard += f'{position}. {result.name}: {result.score}\n'
+            position += 1
 
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
         return leaderboard, keyboard
 
     async def new_game(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         await self.repository.reset_user_progress(message.from_user.id)
-
-        text: str = '0️⃣ Счет обнулён. Желаете сыграть еще раз?'
-        keyboard = self.get_welcome_keyboard()
-
-        return text, keyboard
+        keyboard: ReplyKeyboardMarkup = self.get_welcome_keyboard()
+        return NEW_GAME_MSG, keyboard
 
     def _build_keyboard(self, button_texts: list[str]) -> ReplyKeyboardMarkup:
         keyboard_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
