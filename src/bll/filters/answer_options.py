@@ -1,7 +1,7 @@
 from aiogram.filters import Filter
 from aiogram.types import Message
 
-from src.bll.quiz import QuizService
+from src.bll.filter import FilterService
 from src.core.db.logs import log_query
 from src.core.db.setup import connection_factory, row_dict_factory
 from src.dal.quiz import QuizRepository
@@ -13,5 +13,7 @@ class InAnswerOptionsFilter(Filter):
             db.row_factory = row_dict_factory
             await db.set_trace_callback(log_query)
 
-            quiz_service: QuizService = QuizService(QuizRepository(db))
-            return await quiz_service.in_answer_options(message)
+            filter_service: FilterService = FilterService(QuizRepository(db))
+            result: dict | bool = await filter_service.in_answer_options(message)
+
+        return result
