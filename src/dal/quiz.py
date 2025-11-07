@@ -1,6 +1,11 @@
+from logging import Logger, getLogger
+
 from aiosqlite import Connection
 
 from src.bll.dto.user import UserDTO, UserResultDTO
+from src.bll.exceptions.user import UserNotFoundError
+
+logger: Logger = getLogger(__name__)
 
 
 class QuizRepository:
@@ -30,7 +35,9 @@ class QuizRepository:
         async with self.db.execute(query, params) as cursor:
             result: dict | None = await cursor.fetchone()
 
-        # TODO вызвать исключение, когда result=None
+        if not result:
+            logger.error(f'Пользователь не найден: {user_id=}')
+            raise UserNotFoundError()
 
         return UserDTO(**result)
 
