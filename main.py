@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from src.api import bot_router
+from src.bll.question import questions_loader
 from src.core.db.init import init_db
 from src.core.logging_config import setup_logging
 from src.core.middlewares.db import DatabaseMiddleware
@@ -14,6 +15,7 @@ setup_logging()
 
 
 async def main() -> None:
+    questions_loader.load()
     await init_db()
 
     dp: Dispatcher = Dispatcher()

@@ -1,10 +1,11 @@
 from aiogram.types import Message, ReplyKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from src.bll.dto.question import Question
 from src.bll.dto.user import UserDTO, UserResultDTO
+from src.bll.question import questions_loader
 from src.core.constants import END_MSG, START_MSG, EndKeyboardEnum
 from src.dal.quiz import QuizRepository
-from src.questions import questions_and_answers
 
 
 class QuizService:
@@ -13,12 +14,12 @@ class QuizService:
 
     async def is_right_answer(self, message: Message) -> bool:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
-        right_answer: str = questions_and_answers.get(user.question_id)['right_answer']
+        right_answer: str = questions_loader.questions[user.question_id].right_answer
         return message.text == right_answer
 
     async def in_answer_options(self, message: Message) -> bool:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
-        answer_options: list[str] = questions_and_answers.get(user.question_id)['answer_options']
+        answer_options: list[str] = questions_loader.questions[user.question_id].answer_options
         return message.text in answer_options
 
     async def add_gamer(self, message: Message) -> None:
@@ -27,13 +28,10 @@ class QuizService:
     async def get_current_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
 
-        question: dict[str, str | list[str]] = questions_and_answers[user.question_id]
-        text_question: str = question['text']
-        answer_options: list[str] = question['answer_options']
+        question: Question = questions_loader.questions[user.question_id]
+        keyboard: ReplyKeyboardMarkup = self._build_keyboard(question.answer_options)
 
-        keyboard: ReplyKeyboardMarkup = self._build_keyboard(answer_options)
-
-        return text_question, keyboard
+        return question.text, keyboard
 
     async def add_point(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         await self.repository.add_point(message.from_user.id)
@@ -42,7 +40,7 @@ class QuizService:
     async def next_question(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
 
-        if user.question_id >= len(questions_and_answers) - 1:
+        if user.question_id >= len(questions_loader.questions) - 1:
             keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
             return END_MSG, keyboard
 
@@ -52,7 +50,7 @@ class QuizService:
     async def show_result(self, message: Message) -> tuple[str, ReplyKeyboardMarkup]:
         user: UserDTO = await self.repository.get_user(message.from_user.id)
 
-        result: str = f'🧮 Правильно {user.score} из {len(questions_and_answers)}'
+        result: str = f'🧮 Правильно {user.score} из {len(questions_loader.questions)}'
         keyboard: ReplyKeyboardMarkup = self._get_end_keyboard()
 
         return result, keyboard
